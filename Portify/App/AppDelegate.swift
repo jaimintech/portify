@@ -4,7 +4,7 @@ import SwiftUI
 
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
-    private var statusItem: NSStatusItem?
+    private var statusItemController: StatusItemController?
     private var popover: NSPopover?
 
     private let scanService = ScanService()
@@ -14,21 +14,26 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         Logger.lifecycle.info("Portify launched")
 
-        setupStatusItem()
+        let controller = StatusItemController()
+        controller.bind(to: viewModel)
+        self.statusItemController = controller
+
         setupPopover()
 
         Task {
             await scanService.start()
         }
-    }
 
-    private func setupStatusItem() {
-        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-
-        if let button = statusItem?.button {
-            button.image = NSImage(systemSymbolName: "network", accessibilityDescription: "Portify")
-            button.action = #selector(togglePopover)
-            button.target = self
+        // Start config file watching
+        let watcher = DirectoryConfigWatcher()
+        Task {
+            await configStore.startWatching(watcher: watcher) { [weak self] config in
+                Task { @MainActor in
+                    guard let self else { return }
+                    await self.scanService.updateInterval(config.scanInterval)
+                    Logger.config.info("Config reloaded — scan interval: \(config.scanInterval)s")
+                }
+            }
         }
     }
 
@@ -42,14 +47,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         self.popover = popover
     }
 
-    @objc private func togglePopover() {
-        guard let popover, let button = statusItem?.button else { return }
-
-        if popover.isShown {
-            popover.performClose(nil)
-        } else {
-            popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
-            NSApp.activate(ignoringOtherApps: true)
-        }
+    @objc func togglePopover() {
+        statusItemController?.showPopover(with: viewModel)
     }
 }

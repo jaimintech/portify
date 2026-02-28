@@ -7,7 +7,17 @@ struct SettingsView: View {
                 .tabItem {
                     Label("General", systemImage: "gearshape")
                 }
+
+            AppearanceSettingsView()
+                .tabItem {
+                    Label("Appearance", systemImage: "paintbrush")
+                }
+
+            AdvancedSettingsView()
+                .tabItem {
+                    Label("Advanced", systemImage: "wrench.and.screwdriver")
+                }
         }
-        .frame(width: 450, height: 300)
+        .frame(width: 480, height: 360)
     }
 }
