@@ -1,3 +1,4 @@
+import PortifyCore
 import Foundation
 @testable import Portify
 

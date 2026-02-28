@@ -9,12 +9,13 @@ import OSLog
 /// - `n` — network name (address:port for TCP)
 ///
 /// Unknown field prefixes are logged and skipped for forward compatibility.
-struct LsofFParser {
+public struct LsofFParser {
+    public init() {}
     struct ParseError: Error {
         let message: String
     }
 
-    func parse(_ output: String) -> [RawListeningPort] {
+    public func parse(_ output: String) -> [RawListeningPort] {
         var results: [RawListeningPort] = []
         var currentPID: Int32?
         var currentCommand: String?

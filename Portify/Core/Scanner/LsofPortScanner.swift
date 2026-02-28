@@ -2,21 +2,21 @@ import Foundation
 import OSLog
 
 /// Production PortScanning implementation using lsof -F.
-struct LsofPortScanner: PortScanning {
+public struct LsofPortScanner: PortScanning {
     private let launcher: ProcessLaunching
     private let parser = LsofFParser()
 
-    init(launcher: ProcessLaunching = FoundationProcessLauncher()) {
+    public init(launcher: ProcessLaunching = FoundationProcessLauncher()) {
         self.launcher = launcher
     }
 
-    func scan() async throws -> [RawListeningPort] {
+    public func scan() async throws -> [RawListeningPort] {
         let startTime = CFAbsoluteTimeGetCurrent()
 
         let output = try await launcher.run(
-            executableURL: URL(fileURLWithPath: Constants.lsofPath),
+            executableURL: URL(fileURLWithPath: CoreConstants.lsofPath),
             arguments: ["-F", "pcn", "-iTCP", "-sTCP:LISTEN", "-P", "-n"],
-            timeout: Constants.lsofTimeout
+            timeout: CoreConstants.lsofTimeout
         )
 
         let results = parser.parse(output)

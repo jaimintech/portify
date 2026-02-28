@@ -1,7 +1,8 @@
 import Foundation
 
 /// Maps binary names to ProcessType for known dev server runtimes.
-struct ProcessClassifier {
+public struct ProcessClassifier {
+    public init() {}
     /// Binary name → ProcessType mapping table.
     private static let binaryMap: [String: ProcessType] = [
         // Node.js
@@ -55,7 +56,7 @@ struct ProcessClassifier {
     ]
 
     /// Classify a process by its binary name and path.
-    func classify(processName: String, path: String) -> ProcessType {
+    public func classify(processName: String, path: String) -> ProcessType {
         // Try direct lookup first
         let name = processName.lowercased()
         if let type = Self.binaryMap[name] {

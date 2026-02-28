@@ -2,14 +2,14 @@ import Foundation
 import OSLog
 
 /// Safely kills processes with PID revalidation to prevent killing wrong processes.
-final class ProcessKiller: Sendable {
-    enum KillError: Error, LocalizedError {
+public final class ProcessKiller: Sendable {
+    public enum KillError: Error, LocalizedError, Equatable {
         case processChanged
         case processAlreadyDead
         case signalFailed
         case sigkillRequired
 
-        var errorDescription: String? {
+        public var errorDescription: String? {
             switch self {
             case .processChanged:
                 return "Process has changed since listed. Refreshing..."
@@ -26,7 +26,7 @@ final class ProcessKiller: Sendable {
     private let signalSender: SignalSending
     private let procInfo: ProcInfoProviding
 
-    init(
+    public init(
         signalSender: SignalSending? = nil,
         procInfo: ProcInfoProviding? = nil
     ) {
@@ -35,25 +35,20 @@ final class ProcessKiller: Sendable {
     }
 
     /// Kill a server process safely with PID revalidation.
-    func kill(server: DevServer) async throws {
-        // Step 1: Revalidate before SIGTERM
+    public func kill(server: DevServer) async throws {
         try revalidate(server: server)
 
-        // Step 2: Check if already dead
         guard signalSender.isAlive(pid: server.pid) else {
             throw KillError.processAlreadyDead
         }
 
-        // Step 3: Send SIGTERM
         Logger.kill.info("Sending SIGTERM to PID \(server.pid) (port \(server.port))")
         guard signalSender.send(signal: SIGTERM, to: server.pid) else {
             throw KillError.signalFailed
         }
 
-        // Step 4: Wait grace period
-        try await Task.sleep(for: .seconds(Constants.sigTermGracePeriod))
+        try await Task.sleep(for: .seconds(CoreConstants.sigTermGracePeriod))
 
-        // Step 5: Check if process died
         if signalSender.isAlive(pid: server.pid) {
             Logger.kill.warning("PID \(server.pid) still alive after SIGTERM")
             throw KillError.sigkillRequired
@@ -63,7 +58,7 @@ final class ProcessKiller: Sendable {
     }
 
     /// Force kill with SIGKILL after revalidation.
-    func forceKill(server: DevServer) throws {
+    public func forceKill(server: DevServer) throws {
         try revalidate(server: server)
 
         Logger.kill.info("Sending SIGKILL to PID \(server.pid)")
@@ -72,9 +67,7 @@ final class ProcessKiller: Sendable {
         }
     }
 
-    /// Revalidate that the PID still corresponds to the same process.
     private func revalidate(server: DevServer) throws {
-        // Check path still matches
         if let currentPath = procInfo.executablePath(for: server.pid) {
             if currentPath != server.processPath && !server.processPath.isEmpty {
                 Logger.kill.warning("PID \(server.pid) path changed: expected '\(server.processPath)', got '\(currentPath)'")
@@ -82,7 +75,6 @@ final class ProcessKiller: Sendable {
             }
         }
 
-        // Check start time still matches
         if let storedTime = server.processStartTime,
            let currentTime = procInfo.startTime(for: server.pid) {
             if abs(storedTime.timeIntervalSince(currentTime)) > 1.0 {

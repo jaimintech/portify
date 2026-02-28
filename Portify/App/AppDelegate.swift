@@ -1,3 +1,4 @@
+import PortifyCore
 import AppKit
 import OSLog
 import SwiftUI

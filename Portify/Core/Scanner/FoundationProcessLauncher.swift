@@ -2,8 +2,10 @@ import Foundation
 import OSLog
 
 /// Production implementation of ProcessLaunching using Foundation.Process.
-struct FoundationProcessLauncher: ProcessLaunching {
-    func run(
+public struct FoundationProcessLauncher: ProcessLaunching {
+    public init() {}
+
+    public func run(
         executableURL: URL,
         arguments: [String],
         timeout: TimeInterval

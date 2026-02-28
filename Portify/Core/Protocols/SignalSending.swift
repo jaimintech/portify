@@ -1,7 +1,7 @@
 import Foundation
 
 /// Abstraction over kill(2) for sending POSIX signals.
-protocol SignalSending: Sendable {
+public protocol SignalSending: Sendable {
     /// Send a signal to a process. Returns true if successful.
     func send(signal: Int32, to pid: Int32) -> Bool
 

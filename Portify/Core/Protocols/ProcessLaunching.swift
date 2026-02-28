@@ -1,7 +1,7 @@
 import Foundation
 
 /// Abstraction over Foundation.Process for launching external commands.
-protocol ProcessLaunching: Sendable {
+public protocol ProcessLaunching: Sendable {
     /// Launch a process and return its stdout output.
     /// - Parameters:
     ///   - executableURL: Full path to the executable.
@@ -15,7 +15,7 @@ protocol ProcessLaunching: Sendable {
     ) async throws -> String
 }
 
-enum ProcessLaunchError: Error, Sendable {
+public enum ProcessLaunchError: Error, Sendable {
     case timeout
     case executionFailed(exitCode: Int32)
     case executableNotFound(path: String)

@@ -1,28 +1,28 @@
 import Foundation
 
 /// Application configuration persisted to ~/.config/portify/config.json
-struct AppConfig: Codable, Equatable, Sendable {
-    var schemaVersion: Int
-    var scanInterval: TimeInterval
-    var launchAtLogin: Bool
-    var showInDock: Bool
-    var portRangeMin: UInt16
-    var portRangeMax: UInt16
-    var overrides: [PortOverride]
-    var sortOrder: SortOrder
-    var showNotifications: Bool
-    var globalHotkeyEnabled: Bool
+public struct AppConfig: Codable, Equatable, Sendable {
+    public var schemaVersion: Int
+    public var scanInterval: TimeInterval
+    public var launchAtLogin: Bool
+    public var showInDock: Bool
+    public var portRangeMin: UInt16
+    public var portRangeMax: UInt16
+    public var overrides: [PortOverride]
+    public var sortOrder: SortOrder
+    public var showNotifications: Bool
+    public var globalHotkeyEnabled: Bool
 
-    enum SortOrder: String, Codable, Sendable, CaseIterable {
+    public enum SortOrder: String, Codable, Sendable, CaseIterable {
         case port
         case name
         case type
         case recent
     }
 
-    static let `default` = AppConfig(
-        schemaVersion: Constants.currentSchemaVersion,
-        scanInterval: Constants.defaultScanInterval,
+    public static let `default` = AppConfig(
+        schemaVersion: CoreConstants.currentSchemaVersion,
+        scanInterval: CoreConstants.defaultScanInterval,
         launchAtLogin: false,
         showInDock: false,
         portRangeMin: 1,

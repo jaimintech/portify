@@ -1,9 +1,10 @@
 import Foundation
 
 /// Parses project manifest files to extract project names.
-struct ManifestParser {
+public struct ManifestParser {
+    public init() {}
     /// Manifest file names in priority order.
-    static let manifestFiles = [
+    public static let manifestFiles = [
         "package.json",
         "Cargo.toml",
         "go.mod",
@@ -18,7 +19,7 @@ struct ManifestParser {
     ]
 
     /// Extract project name from a manifest file at the given path.
-    func extractName(from manifestPath: String) -> String? {
+    public func extractName(from manifestPath: String) -> String? {
         let url = URL(fileURLWithPath: manifestPath)
         guard let data = try? Data(contentsOf: url),
               let content = String(data: data, encoding: .utf8) else {

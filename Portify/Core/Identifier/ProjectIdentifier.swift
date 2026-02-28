@@ -2,13 +2,14 @@ import Foundation
 import OSLog
 
 /// Identifies project names by walking directory trees for manifest files.
-actor ProjectIdentifier {
+public actor ProjectIdentifier {
+    public init() {}
     private var cache: [String: String] = [:]  // CWD → project name
     private let manifestParser = ManifestParser()
 
     /// Identify the project name for a given working directory.
     /// Fallback chain: manifest name → directory name → process name
-    func identify(cwd: String, processName: String) -> String {
+    public func identify(cwd: String, processName: String) -> String {
         if let cached = cache[cwd] {
             return cached
         }
@@ -19,7 +20,7 @@ actor ProjectIdentifier {
     }
 
     /// Clear the cache (e.g., when a manual refresh is triggered).
-    func clearCache() {
+    public func clearCache() {
         cache.removeAll()
     }
 

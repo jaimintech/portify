@@ -1,7 +1,7 @@
 import Foundation
 
 /// Process information from the OS (proc_pidpath, proc_pidinfo).
-protocol ProcInfoProviding: Sendable {
+public protocol ProcInfoProviding: Sendable {
     /// Get the executable path for a PID.
     func executablePath(for pid: Int32) -> String?
 

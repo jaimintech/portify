@@ -1,7 +1,7 @@
 import Foundation
 
 /// Known dev server process types.
-enum ProcessType: String, Codable, Sendable, CaseIterable {
+public enum ProcessType: String, Codable, Sendable, CaseIterable {
     case node
     case python
     case go
@@ -14,7 +14,7 @@ enum ProcessType: String, Codable, Sendable, CaseIterable {
     case other
 
     /// Human-readable display name.
-    var displayName: String {
+    public var displayName: String {
         switch self {
         case .node: return "Node.js"
         case .python: return "Python"
@@ -30,7 +30,7 @@ enum ProcessType: String, Codable, Sendable, CaseIterable {
     }
 
     /// SF Symbol name for this process type.
-    var iconName: String {
+    public var iconName: String {
         switch self {
         case .node: return "n.square.fill"
         case .python: return "p.square.fill"

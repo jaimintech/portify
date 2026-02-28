@@ -1,3 +1,4 @@
+import PortifyCore
 import Foundation
 import OSLog
 
@@ -19,14 +20,4 @@ enum Constants {
     static let maxDisplayedServers = 50
 
     static let lsofPath = "/usr/sbin/lsof"
-}
-
-extension Logger {
-    private static let subsystem = Bundle.main.bundleIdentifier ?? "com.portify.app"
-
-    static let scanner = Logger(subsystem: subsystem, category: "scanner")
-    static let resolver = Logger(subsystem: subsystem, category: "resolver")
-    static let config = Logger(subsystem: subsystem, category: "config")
-    static let lifecycle = Logger(subsystem: subsystem, category: "lifecycle")
-    static let kill = Logger(subsystem: subsystem, category: "kill")
 }
